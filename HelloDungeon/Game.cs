@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -8,26 +9,20 @@ using System.Xml.Linq;
 
 namespace HelloDungeon
 {
+    struct Weapon
+    {
+        public string Name;
+        public float WeaponDamage;
+        public float WeaponDefense;
+        public float WeaponDurability;
+    }
     class Game
     {
         string playerChoice;
         int currentScene = -1;
         bool isDefending;
-        struct Character
-        {
-            public string Name;
-            public float Health;
-            public float Damage;
-            public float Defense;
-            public Weapon Weapon;
-        }
-        struct Weapon
-        {
-            public string Name;
-            public float WeaponDamage;
-            public float WeaponDefense;
-            public float WeaponDurability;
-        }
+       
+        
 
         bool gameOver;
 
@@ -36,12 +31,61 @@ namespace HelloDungeon
         Character JohnCena;
         Character Payton;
         Character Lodis;
+        Character[] Enemies;
+        int currentEnemyIndex = 0;
 
         Weapon Sword;
         Weapon Sheild;
         Weapon Bow;
         Weapon Hammer;
         Weapon Axe;
+
+        void Enemys()
+        {
+
+
+            JoePable = new Character("JoePable", 100f, 3f, 1f, Axe);
+
+
+            JoePable.Name = "JoePable";
+            JoePable.Health = 100f;
+            JoePable.Damage = 3f;
+            JoePable.Defense = 1f;
+            JoePable.Weapon = Axe;
+
+
+            JohnCena = new Character("JOHN.....cena", 200f, 5f, 2f, Hammer);
+
+
+            JohnCena.Name = "JOHN.....cena";
+            JohnCena.Health = 200f;
+            JohnCena.Damage = 5f;
+            JohnCena.Defense = 2f;
+            JohnCena.Weapon = Hammer;
+
+
+            Payton = new Character("Peyton", 300f, 8f, 4f, Bow);
+
+
+            Payton.Name = "Payton";
+            Payton.Health = 300f;
+            Payton.Damage = 8f;
+            Payton.Defense = 4f;
+            Payton.Weapon = Bow;
+
+
+            Lodis = new Character("Lodis", 400f, 10f, 8f, Sword);
+
+
+            Lodis.Name = "Lodis";
+            Lodis.Health = 400f;
+            Lodis.Damage = 10f;
+            Lodis.Defense = 8f;
+            Lodis.Weapon = Sword;
+
+            Enemies = new Character[4] { JoePable, JohnCena, Payton, Lodis };
+
+        }
 
         string GetInput(string prompt, string option1, string option2, string option3, string option4)
         {
@@ -137,15 +181,7 @@ namespace HelloDungeon
             
         }
 
-        void PrintCharacterStats(Character character)
-        {
-            Console.WriteLine("Name: " + character.Name);
-            Console.WriteLine("Health: " + character.Health);
-            Console.WriteLine("Damage: " + character.Damage);
-            Console.WriteLine("Defense: " + character.Defense);
-
-            return;
-        }
+        
 
         void PrintWeaponStats(Weapon weapon)
         {
@@ -216,13 +252,16 @@ namespace HelloDungeon
 
         void BattleResults()
         { 
-            if (JoePable.Health > 0 && JohnCena.Health <= 0)
+            if (JoePable.Health < 0 && Player.Health >= 0)
+            {
+                Console.WriteLine("The winner is " + Player.Name);
+                currentScene = 1;
+                currentEnemyIndex++;
+            }
+            else if (Player.Health < 0 && JoePable.Health >= 0)
             {
                 Console.WriteLine("The winner is " + JoePable.Name);
-            }
-            else if (JohnCena.Health > 0 && JoePable.Health <= 0)
-            {
-                Console.WriteLine("The winner is " + JohnCena.Name);
+                currentScene = 3;
             }
 
             Console.ReadKey(true);
@@ -230,98 +269,11 @@ namespace HelloDungeon
 
         }
 
-        void Fight(ref Character character1)
-        {
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-            string battleChoice = GetInput("Choose an action", "Attack", "Deffend", "Flee", "Seduce?");  
-
-            if (battleChoice == "1")
-            {
-                character1.Health = Attack(Player, character1);
-                Console.WriteLine("You used " + Player.Weapon.Name + "!");
-            }
-            else if (battleChoice == "2")
-            {
-                isDefending = true;
-                Player.Defense *= 5;
-                Console.WriteLine("You grit your teeth");
-            }
-            else if (battleChoice == "3")
-            {
-                Console.WriteLine("You fled from the battle as fast as you could.");
-                currentScene = 2;
-                return;
-            }
-            
-
-            Console.WriteLine(character1.Name + " Punches " + Player.Name + "!");
-            Player.Health = Attack(character1, Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-            if (isDefending == true)
-            {
-
-            }
-
-
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-
-            Console.WriteLine(Player.Name + " Punches " + character1.Name + " back!");
-            character1.Health = Attack(Player, character1);
-            Console.ReadKey(true);
-            Console.Clear();
-
-
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
-        }
+        
 
         void Start()
         {
             
-
-
-            JoePable.Name = "JoePable";
-            JoePable.Health = 100f;
-            JoePable.Damage = 3f;
-            JoePable.Defense = 1f;
-            JoePable.Weapon = Axe;
-
-
-            JohnCena.Name = "JOHN.....cena";
-            JohnCena.Health = 200f;
-            JohnCena.Damage = 5f;
-            JohnCena.Defense = 2f;
-            JohnCena.Weapon = Hammer;
-
-
-            Payton.Name = "Payton";
-            Payton.Health = 300f;
-            Payton.Damage = 8f;
-            Payton.Defense = 4f;
-            Payton.Weapon = Bow;
-
-
-            Lodis.Name = "Lodis";
-            Lodis.Health = 400f;
-            Lodis.Damage = 10f;
-            Lodis.Defense = 8f;
-            Lodis.Weapon = Sword;
 
 
             Sword.Name = "The sword of Aragon";
@@ -364,6 +316,15 @@ namespace HelloDungeon
             {
                 BattleResults();
             }
+            else if (currentScene == 3)
+            {
+                
+            }
+        }
+
+        void GameOver()
+        {
+
         }
 
         void End()
@@ -371,54 +332,8 @@ namespace HelloDungeon
             Console.WriteLine("Thanks for Playing :)");
         }
 
-        void Array(int[] prompt)
-        {
-
-
-            
-            for (int i = 0; i < prompt.Length; i++)
-            {
-                Console.WriteLine(i + prompt[i]);
-            }
-
-        }
-
         public void Run()
         {
-            ///Create a function that takes in an integer array
-            ///The function should print out the sum of all of the values in the array
-            ///input: int[] numbers = new int[3] { 1, 2, 3 };
-            ///Output: 6
-            ///
-
-
-            Array();
-
-
-            return;
-
-            int[] grades = new int[5];
-
-            int count = 0;
-
-            while (count < 5)
-            {
-
-
-                Console.WriteLine(count);
-                count++;
-            }
-
-            for (int i = 0; i < grades.Length; i++)
-            {
-                Console.WriteLine(grades[i]);
-            }
-
-
-            ///Create a weapon struct should contain a name variable 
-            ///add a variable that has the weapon struct type to the monster struct
-
-
             Start();
 
             while (gameOver == false)
@@ -427,7 +342,6 @@ namespace HelloDungeon
             }
 
             End();
-
         }
         
     }
