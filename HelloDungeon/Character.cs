@@ -16,6 +16,17 @@ namespace HelloDungeon
         private float _defenseBoost = 5;
         private Weapon _weapon;
 
+
+        public Character()
+        {
+            _name = " ";
+            _health = 0f;
+            _damage = 0f;
+            _defense = 0f;
+            _defenseBoost = 0f;
+            _weapon = new Weapon();
+        }
+          
         public Character(string name, float health, float damage, float defense, Weapon currentWeapon)
         {
             _name = name;
@@ -23,6 +34,13 @@ namespace HelloDungeon
             _damage = damage;
             _defense = defense;
             _weapon = currentWeapon;
+        }
+
+        public Character CharacterL(Character character)
+        {
+            Character charactercharacter = character;
+
+            return charactercharacter;
         }
 
         public string GetName()
@@ -45,6 +63,11 @@ namespace HelloDungeon
             return _damage;
         }
 
+        public float GetDefense()
+        {
+            return _defense;
+        }
+
         public void DefenseBoost()
         {
             _defense += _defenseBoost; 
@@ -55,75 +78,21 @@ namespace HelloDungeon
             _defense -= _defenseBoost;
         }
 
-        public void PrintCharacterStats(Character character)
+        public virtual void PrintStats()
         {
             Console.WriteLine("Name: " + _name);
             Console.WriteLine("Health: " + _health);
             Console.WriteLine("Damage: " + _damage);
             Console.WriteLine("Defense: " + _defense);
 
+
             return;
         }
 
-        void Fight(ref Character character1)
+        public void TakeDamage(float damage)
         {
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-            string battleChoice = GetInput("Choose an action", "Attack", "Deffend", "Flee", "Seduce?");
-
-            if (battleChoice == "1")
-            {
-                character1.Health = Attack(Player, character1);
-                Console.WriteLine("You used " + Player.Weapon.Name + "!");
-            }
-            else if (battleChoice == "2")
-            {
-                isDefending = true;
-                Player.Defense *= 5;
-                Console.WriteLine("You grit your teeth");
-            }
-            else if (battleChoice == "3")
-            {
-                Console.WriteLine("You fled from the battle as fast as you could.");
-                currentScene = 2;
-                return;
-            }
-
-
-            Console.WriteLine(character1.Name + " Punches " + Player.Name + "!");
-            Player.Health = Attack(character1, Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-            if (isDefending == true)
-            {
-
-            }
-
-
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
-            Console.ReadKey(true);
-            Console.Clear();
-
-
-            Console.WriteLine(Player.Name + " Punches " + character1.Name + " back!");
-            character1.Health = Attack(Player, character1);
-            Console.ReadKey(true);
-            Console.Clear();
-
-
-            PrintCharacterStats(character1);
-            Console.ReadKey(true);
-            Console.Clear();
-            PrintCharacterStats(Player);
+            _health = damage - _defense;
         }
+
     }
 }

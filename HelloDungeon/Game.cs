@@ -26,7 +26,7 @@ namespace HelloDungeon
 
         bool gameOver;
 
-        Character Player;
+        Player PlayerCharacter;
         Character JoePable;
         Character JohnCena;
         Character Payton;
@@ -43,83 +43,99 @@ namespace HelloDungeon
         void Enemys()
         {
 
-
             JoePable = new Character("JoePable", 100f, 3f, 1f, Axe);
-
-
-            JoePable.Name = "JoePable";
-            JoePable.Health = 100f;
-            JoePable.Damage = 3f;
-            JoePable.Defense = 1f;
-            JoePable.Weapon = Axe;
-
 
             JohnCena = new Character("JOHN.....cena", 200f, 5f, 2f, Hammer);
 
-
-            JohnCena.Name = "JOHN.....cena";
-            JohnCena.Health = 200f;
-            JohnCena.Damage = 5f;
-            JohnCena.Defense = 2f;
-            JohnCena.Weapon = Hammer;
-
-
             Payton = new Character("Peyton", 300f, 8f, 4f, Bow);
 
-
-            Payton.Name = "Payton";
-            Payton.Health = 300f;
-            Payton.Damage = 8f;
-            Payton.Defense = 4f;
-            Payton.Weapon = Bow;
-
-
             Lodis = new Character("Lodis", 400f, 10f, 8f, Sword);
-
-
-            Lodis.Name = "Lodis";
-            Lodis.Health = 400f;
-            Lodis.Damage = 10f;
-            Lodis.Defense = 8f;
-            Lodis.Weapon = Sword;
 
             Enemies = new Character[4] { JoePable, JohnCena, Payton, Lodis };
 
         }
 
-        string GetInput(string prompt, string option1, string option2, string option3, string option4)
+        void Fight(ref Character character)
         {
+            PlayerCharacter.PrintStats();
+            Console.ReadKey(true);
+            Console.Clear();
+            character.PrintStats();
+            Console.ReadKey(true);
+            Console.Clear();
 
-            Console.WriteLine(prompt);
-            Console.WriteLine("1." + option1);
-            Console.WriteLine("2." + option2);
-            Console.WriteLine("3." + option3);
-            Console.WriteLine("4." + option4);
+            string battleChoice = PlayerCharacter.GetInput("Choose an action", "Attack", "Deffend", "Flee", "Seduce?");
 
-            playerChoice = Console.ReadLine();
+            if (battleChoice == "1")
+            {
+                character.TakeDamage(currentEnemyIndex);
+                Console.WriteLine("You used " + PlayerCharacter.GetWeapon().Name + "!");
+            }
+            else if (battleChoice == "2")
+            {
+                isDefending = true;
+                Console.WriteLine("You grit your teeth");
+            }
+            else if (battleChoice == "3")
+            {
+                Console.WriteLine("You fled from the battle as fast as you could.");
+                currentScene = 2;
+                return;
+            }
 
-            return playerChoice;
+
+            Console.WriteLine(character.GetName() + " Punches " + PlayerCharacter.GetName() + "!");
+            PlayerCharacter.TakeDamage(character.GetDamage());
+            Console.ReadKey(true);
+            Console.Clear();
+
+            if (isDefending == true)
+            {
+
+            }
+
+
+            character.PrintStats();
+            Console.ReadKey(true);
+            Console.Clear();
+            PlayerCharacter.PrintStats();
+            Console.ReadKey(true);
+            Console.Clear();
+
+
+            Console.WriteLine(PlayerCharacter.GetName() + " Punches " + character.GetName()+ " back!");
+            character.TakeDamage(PlayerCharacter.GetDamage());
+            Console.ReadKey(true);
+            Console.Clear();
+
+
+            character.PrintStats();
+            Console.ReadKey(true);
+            Console.Clear();
+            PlayerCharacter.PrintStats();
         }
 
-        void PlayerCharacter()
+        void PlayerCharacter1()
         {
-            Console.WriteLine("Please select a caracter", JoePable, JohnCena, Payton, Lodis);
+
+            PlayerCharacter = new Player();
+            Console.WriteLine(PlayerCharacter.GetInput("Please select a caracter", "JoePable", "JohnCena", "Payton", "Lodis"));
             
             if (playerChoice == "1")
             {
-                Player = JoePable;
+                PlayerCharacter = new Player(JoePable.GetName(), JoePable.Health(), JoePable.GetDamage(), JoePable.GetDefense(), JoePable.GetWeapon());
             }
             else if (playerChoice == "2")
             {
-                Player = JohnCena;
+                PlayerCharacter = new Player(JohnCena.GetName(), JohnCena.Health(), JohnCena.GetDamage(), JohnCena.GetDefense(), JohnCena.GetWeapon());
             }
             else if (playerChoice == "3")
             {
-                Player = Payton;
+                PlayerCharacter = new Player(Payton.GetName(), Payton.Health(), Payton.GetDamage(), Payton.GetDefense(), Payton.GetWeapon());
             }
             else if (playerChoice == "4")
             {
-                Player = Lodis;
+                PlayerCharacter = new Player(Lodis.GetName(), Lodis.Health(), Lodis.GetDamage(), Lodis.GetDefense(), Lodis.GetWeapon());
             }
             else
             {
@@ -130,7 +146,7 @@ namespace HelloDungeon
                 return;
             }
 
-            PrintCharacterStats(Player);
+            //PrintCharacterStats(Player);
             Console.ReadKey(true);
             Console.Clear();
 
@@ -176,12 +192,10 @@ namespace HelloDungeon
 
         void PlayerStart()
         {
-            PlayerCharacter();
+            PlayerCharacter1();
 
             
         }
-
-        
 
         void PrintWeaponStats(Weapon weapon)
         {
@@ -205,12 +219,12 @@ namespace HelloDungeon
 
                 if (playerChoice == "1" || playerChoice == "yes")
                 {
-                    character.Health += 10;
-                    PrintCharacterStats(character);
+                    
+                    character.PrintStats();
                 }
                 else if (playerChoice == "2" || playerChoice == "no")
                 {
-                    PrintCharacterStats(character);
+                    character.PrintStats();
                 }
                 else
                 {
@@ -227,23 +241,14 @@ namespace HelloDungeon
 
         }
 
-        float Attack(Character attacker, Character defender)
-        {
-            float totalDamage = attacker.Damage - defender.Defense;
-
-            return defender.Health - totalDamage;
-        }
-
         void BattleScene()
         {
-
-            
-            Fight(ref JohnCena);
+            Fight(ref JoePable);
 
             Console.ReadKey(true);
             Console.Clear();
 
-            if (Player.Health <= 0 || JohnCena.Health <= 0)
+            if (PlayerCharacter.Health() <= 0 || JoePable.Health() <= 0)
             {
                 currentScene = 2;
             }
@@ -252,15 +257,15 @@ namespace HelloDungeon
 
         void BattleResults()
         { 
-            if (JoePable.Health < 0 && Player.Health >= 0)
+            if (JoePable.Health() < 0 && PlayerCharacter.Health() >= 0)
             {
-                Console.WriteLine("The winner is " + Player.Name);
+                Console.WriteLine("The winner is " + PlayerCharacter.GetName());
                 currentScene = 1;
                 currentEnemyIndex++;
             }
-            else if (Player.Health < 0 && JoePable.Health >= 0)
+            else if (PlayerCharacter.Health() < 0 && JoePable.Health() >= 0)
             {
-                Console.WriteLine("The winner is " + JoePable.Name);
+                Console.WriteLine("The winner is " + JoePable.GetName());
                 currentScene = 3;
             }
 
@@ -269,13 +274,8 @@ namespace HelloDungeon
 
         }
 
-        
-
         void Start()
         {
-            
-
-
             Sword.Name = "The sword of Aragon";
             Sword.WeaponDurability = 100f;
             Sword.WeaponDamage = 10f;
@@ -324,7 +324,17 @@ namespace HelloDungeon
 
         void GameOver()
         {
+            Console.WriteLine(PlayerCharacter.GetInput("You died. Play again?", "1.Yes", "2.No"));
 
+            if (playerChoice == "1")
+            {
+                currentScene = 0;
+            }
+            else if (playerChoice == "2")
+            {
+                gameOver = true;
+            }
+            
         }
 
         void End()
